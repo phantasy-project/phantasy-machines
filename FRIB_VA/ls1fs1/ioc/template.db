@@ -1,0 +1,36 @@
+record(ao, "$(S):$(SS)_$(D):$(F)_CSET") {
+    field(DTYP, "Soft Channel")
+    field(VAL, 0.1)
+    field(SCAN, "1 second")
+    field(FLNK, "_$(S):$(SS)_$(D):$(F)_CSET_CALC")
+}
+
+record(calc, "_$(S):$(SS)_$(D):$(F)_CSET_CALC") {
+    field(CALC, "(1+(RNDM-0.5)*B)*A")
+    field(INPA, "$(S):$(SS)_$(D):$(F)_CSET")
+    field(INPB, "fac")
+    field(FLNK, "$(S):$(SS)_$(D):$(F)_RSET")
+}
+
+record(ai, "$(S):$(SS)_$(D):$(F)_RSET") {
+    field(DTYP, "Soft Channel")
+    field(INP, "_$(S):$(SS)_$(D):$(F)_CSET_CALC")
+    field(FLNK, "_$(S):$(SS)_$(D):$(F)_RD_CALC")
+}
+
+record(ai, "$(S):$(SS)_$(D):$(F)_RD") {
+    field(DTYP, "Soft Channel")
+    field(INP, "_$(S):$(SS)_$(D):$(F)_RD_CALC")
+}
+
+record(calc, "_$(S):$(SS)_$(D):$(F)_RD_CALC") {
+    field(CALC, "(1+(RNDM-0.5)*B)*A")
+    field(INPA, "$(S):$(SS)_$(D):$(F)_RSET")
+    field(INPB, "fac")
+    field(FLNK, "$(S):$(SS)_$(D):$(F)_RD")
+}
+
+record(ao, "fac") {
+    field(DTYP, "Soft Channel")
+    field(VAL, 0.1)
+}

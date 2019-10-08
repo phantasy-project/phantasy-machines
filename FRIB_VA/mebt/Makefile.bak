@@ -1,0 +1,70 @@
+.PHONY: init clean layout patch template test
+
+PWDIR = $(shell pwd)
+RSRC_DIR = /home/tong/Dropbox/FRIB/work/machines/FRIB_FE
+XLS_LATTICE_FILE = T30102-CM-000155-R001_20170724.xlsx
+
+FILE_LAYOUT = layout.csv
+FILE_CONFIG = phantasy.cfg
+FILE_INIT = phantasy.ini
+FILE_LATTICE_TEMPLATE = template.lat
+FILE_CHANNEL = channels.csv
+FILE_SETTINGS = settings.json
+
+PREFIX = VA
+
+#START_ELEM = FE_MEBT:GV_D1052
+#END_ELEM = FE_MEBT:IP_D1121
+START_ELEM = FE_MEBT:FIRST_DRIFT
+END_ELEM = FE_MEBT:LAST_DRIFT
+
+TAG = MEBT
+
+init:
+	cp -ar $(RSRC_DIR)/$(XLS_LATTICE_FILE) \
+		$(RSRC_DIR)/flame_data \
+		$(RSRC_DIR)/$(FILE_CONFIG) \
+		$(RSRC_DIR)/$(FILE_INIT) $(PWDIR)
+
+
+clean: 
+	rm -rf $(PWDIR)/$(XLS_LATTICE_FILE) \
+		$(PWDIR)/flame_data \
+		$(PWDIR)/$(FILE_CONFIG) \
+		$(PWDIR)/$(FILE_INIT)
+
+layout:
+	phytool frib-layout --cfg $(FILE_CONFIG) \
+		--start $(START_ELEM) \
+		--end $(END_ELEM) $(FILE_LAYOUT)
+
+test:
+	echo $(shell basename `pwd`)
+	echo ${TAG}
+	echo $(TAG)
+
+
+template:
+	#echo "{}" > settings.json
+	phytool flame-lattice $(FILE_LATTICE_TEMPLATE) \
+		--layout $(FILE_LAYOUT) \
+		--config $(FILE_CONFIG) \
+		--mach $(shell basename `pwd`) \
+		--start $(START_ELEM) \
+		--end $(END_ELEM) \
+		--template
+
+settings:
+	phytool flame-settings mebt_template.lat $(FILE_SETTINGS)
+
+channels:
+	phytool frib-channels $(FILE_LAYOUT) $(FILE_CHANNEL) \
+		--start ${START_ELEM} \
+		--end ${END_ELEM} \
+		--tag $(TAG) --machine $(PREFIX) -v
+
+patch:
+	diff $(PWDIR)/$(FILE_CONFIG) $(RSRC_DIR)/$(FILE_CONFIG) \
+		> $(FILE_CONFIG).patch || [ $$? -eq 1 ]
+	diff $(PWDIR)/$(FILE_INIT) $(RSRC_DIR)/$(FILE_INIT) \
+		> $(FILE_INIT).patch || [ $$? -eq 1 ]

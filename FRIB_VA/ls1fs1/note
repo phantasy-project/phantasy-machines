@@ -1,0 +1,16 @@
+Tong Zhang <zhangt@frib.msu.edu>
+2019-02-20 16:31:52 PM EST
+
+- python3-phantasy debian package version 1.9.8-3.
+- Test config for machine: VA_LS1FS1, segment: LS1_TEST, devices:
+
+  channels_1132.csv:
+  LS1_CA01:DCH_D1132: C7SR_CMTF:PSC1_N0001:I_CSET(RSET, RD)
+  LS1_CA01:DCV_D1132: C7SR_CMTF:PSC2_N0001:I_CSET(RSET, RD)
+
+  channels_1319.csv:
+  LS1_CB02:DCH_D1319: C7SR_CMTF:PSC1_N0001:I_CSET(RSET, RD)
+  LS1_CB02:DCV_D1319: C7SR_CMTF:PSC2_N0001:I_CSET(RSET, RD)
+
+- softioc for these testing PVs
+- channels_(1132, 1319).csv: prefix '_#_' to real PVs to bypass PV prefix
